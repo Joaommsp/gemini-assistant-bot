@@ -4,14 +4,12 @@ import google.generativeai as genai
 
 app = Flask(__name__)
 
-# Chaves de API
-UNSPLASH_ACCESS_KEY = 'ue4B8CvnZR014SugCO9EG0xnKKyz1bsZ2NrlmCvbtT4'
-GEMINI_API_KEY = 'AIzaSyAGY27VdQCWPhpQmZ9giY7BV_nIF_M-GZw'
-GEMINI_MODEL_NAME = 'gemini-2.0-flash'  # Nome do modelo Gemini
+UNSPLASH_ACCESS_KEY = ''
+GEMINI_API_KEY = ''
+GEMINI_MODEL_NAME = 'gemini-2.0-flash'  
 
 genai.configure(api_key=GEMINI_API_KEY);
 
-# Endpoint para buscar imagens no Unsplash
 @app.route('/searchImages/unsplash', methods=['POST'])
 def search_unsplash():
     query = request.json.get('query')
@@ -25,9 +23,9 @@ def search_unsplash():
 
     try:
         response = requests.get(url, headers=headers, params=params)
-        response.raise_for_status()  # Verifica erros HTTP
+        response.raise_for_status() 
         data = response.json()
-        images = [result['urls']['small'] for result in data['results']]  # URLs das imagens pequenas
+        images = [result['urls']['small'] for result in data['results']] 
         return jsonify({'images': images})
     except requests.exceptions.RequestException as e:
         return jsonify({'error': f'Erro ao buscar imagens no Unsplash: {str(e)}'}), 500
@@ -65,13 +63,10 @@ def chat_gemini():
     if not user_message:
         return jsonify({'error': 'Mensagem não fornecida'}), 400
 
-    # Gerando resposta com Gemini
     response_message = generate_gemini_response(user_message)
 
-    # Retorna a resposta do chatbot
     return jsonify({'chat_history': [{'message': response_message}]})
 
-# Rota para testar se o servidor está funcionando corretamente
 @app.route("/")
 def home():
     return render_template("index.html", chat_history=[])
