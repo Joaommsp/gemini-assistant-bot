@@ -1,0 +1,16 @@
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+.env
+config.json
+
+*.log
+*.tmp
+*.swp
+.DS_Store
+
+node_modules/
+dist/

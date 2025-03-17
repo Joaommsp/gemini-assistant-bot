@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Poppins, Prompt, Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>Chatbot de IA</title>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background-color: #1a1a1d;
+        padding: 3rem 5rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      main {
+        min-width: 1200px;
+        max-width: 1200px;
+      }
+
+      h1 {
+        font-weight: 500;
+        background: #c3cf3d;
+        background: linear-gradient(to right, #c3cf3d 0%, #ff1a16 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 2rem;
+      }
+
+      .main-container {
+        width: 100%;
+        display: flex;
+        margin-bottom: 1rem;
+      }
+
+      .bot-selector {
+        width: 25%;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding-left: 1rem;
+        border-radius: 10px;
+      }
+
+      .selector-box {
+        width: 100%;
+        height: 100px;
+      }
+
+      .bot-selector button {
+        width: 100%;
+        height: 100%;
+        background-color: #7a69087c;
+        border: 0;
+        padding: 0.5rem 2rem;
+        border-radius: 10px;
+        font-size: 12px;
+        text-transform: uppercase;
+        font-weight: 600;
+        color: transparent;
+        text-align: end;
+        font-size: 1.2rem;
+        font-weight: 600;
+        transition: all 0.3s ease-in-out;
+        font-family: "Prompt", sans-serif;
+      }
+
+      .bot-selector button:hover {
+        cursor: pointer;
+        color: #ffffff;
+      }
+
+      #imageBot-selector {
+        background-image: url(../static/assets/img/a5605d7f-2299-4514-8f81-800c3e20c823.png);
+        background-position: center;
+        background-size: cover;
+        border-radius: 10px;
+      }
+
+      #assistantBot-selector {
+        background-image: url(../static/assets/img/1a431b8f-bad7-4423-9a12-86e737a2ba53.png);
+        background-position: center;
+        background-size: cover;
+        border-radius: 10px;
+      }
+
+      #chat-box {
+        width: 75%;
+        height: 400px;
+        overflow-y: scroll;
+        background-color: #222225;
+        border-radius: 10px;
+        padding: 2.5rem;
+
+        scrollbar-width: thin; /* Firefox */
+        scrollbar-color: #888 #222225; /* Firefox */
+      }
+
+      /* Barra de rolagem no Chrome, Edge e Safari */
+      #chat-box::-webkit-scrollbar {
+        width: 8px; /* Largura da barra */
+      }
+
+      #chat-box::-webkit-scrollbar-thumb {
+        background: #888; /* Cor do "botão" da barra */
+        border-radius: 4px; /* Borda arredondada */
+      }
+
+      #chat-box::-webkit-scrollbar-thumb:hover {
+        background: #555; /* Cor quando passa o mouse */
+      }
+
+      #chat-box::-webkit-scrollbar-track {
+        background: #222225; /* Cor do fundo da barra */
+      }
+
+      .message {
+        margin-bottom: 10px;
+      }
+
+      .user {
+        width: 100%;
+        text-align: right;
+        color: #f6dc43;
+        padding: 1rem;
+        display: flex;
+        align-items: end;
+        flex-direction: column;
+        gap: 1rem;
+        border-right: 2px solid #f6dc43;
+      }
+
+      .user p {
+        text-align: right;
+        width: 50%;
+        display: block;
+      }
+
+      .time {
+        font-size: 0.8rem;
+        color: #61677a;
+      }
+
+      .bot {
+        width: 100%;
+        text-align: left;
+        color: #ffffff;
+        border-left: 2px solid #61677a;
+        padding: 1rem;
+      }
+
+      .bot p {
+        width: 50%;
+        text-align: left;
+      }
+
+      .images-container {
+        margin-top: 1rem;
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .image-result img {
+        width: 100px;
+        border-radius: 5px;
+        width: 300px;
+        height: 300px;
+        object-fit: cover;
+      }
+
+      .submit-container {
+        width: 75%;
+        display: flex;
+        flex-direction: row;
+        justify-content: start;
+        align-items: start;
+        gap: 1rem;
+      }
+
+      #user-input {
+        width: 75%;
+        height: 100px;
+        padding: 2rem;
+        outline: none;
+        border-radius: 10px;
+        background-color: #413f3f;
+        border: 2px solid #413f3f;
+        color: #ffffff;
+      }
+
+      #user-input:focus {
+        border: 2px solid #f6dc43;
+      }
+
+      .submit-btn {
+        width: 25%;
+        padding: 8px 20px;
+        border: 0;
+        border-radius: 100px;
+        background-color: transparent;
+        border: 2px solid #f6dc43;
+        color: #f6dc43;
+        font-weight: 500;
+        transition: all 0.3s ease-in-out;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .submit-btn img {
+        width: 25px;
+      }
+
+      .submit-btn:hover {
+        cursor: pointer;
+        border: 2px solid #f6dc43;
+        background-color: #f6dc43;
+        color: #1a1a1d;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Chatbot de IA com Gemini</h1>
+
+      <div class="main-container">
+        <div id="chat-box">
+          <div class="message bot">
+            Bem-vindo ao Chatbot! Como posso te ajudar?
+          </div>
+        </div>
+
+        <div class="bot-selector">
+          <div class="selector-box" id="imageBot-selector">
+            <button onclick="toggleChatbot('imageBot')">Bot de Imagens</button>
+          </div>
+          <div class="selector-box" id="assistantBot-selector">
+            <button onclick="toggleChatbot('assistant')">
+              Assistente vitual
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="submit-container">
+        <input
+          type="text"
+          id="user-input"
+          placeholder="Digite sua mensagem..."
+        />
+        <button onclick="sendMessage()" class="submit-btn">
+          <span> Enviar </span>
+          <img src="../static/assets/img/arrow-right.svg" alt="">
+        </button>
+      </div>
+    </main>
+
+    <script>
+      let currentChatbot = "imageBot";
+      const now = new Date();
+
+      function formatTime(date) {
+        const horas = String(date.getHours()).padStart(2, "0");
+        const minutos = String(date.getMinutes()).padStart(2, "0");
+        const segundos = String(date.getSeconds()).padStart(2, "0");
+        return `${horas}:${minutos}:${segundos}`;
+      }
+
+      function sendMessage() {
+        const inputField = document.getElementById("user-input");
+        const message = inputField.value.trim();
+        if (!message) return;
+        const formattedTime = formatTime(new Date()); // data aqui
+
+        const chatBox = document.getElementById("chat-box");
+        chatBox.innerHTML += `<div class='message user'><p>${message}</p>
+          <div class='time'>${formattedTime}</div>
+        </div>
+            `;
+        inputField.value = "";
+
+        if (currentChatbot === "imageBot") {
+          fetch("/searchImages/unsplash", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ query: message }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.images && data.images.length > 0) {
+                const imagesHtml = data.images
+                  .map((image) => `<img src="${image}" />`)
+                  .join("");
+                chatBox.innerHTML += `<div class='message bot image-result'>
+                    <span>Aqui estão as imagens relacionadas ao tema enviado:</span>
+                  <div class="images-container">
+                        ${imagesHtml}
+                  </div>
+                    </div>`;
+              } else {
+                chatBox.innerHTML +=
+                  "<div class='message bot'>Nenhuma imagem encontrada.</div>";
+              }
+              chatBox.scrollTop = chatBox.scrollHeight;
+            })
+            .catch((err) => console.log("Erro ao buscar imagens", err));
+        } else if (currentChatbot === "assistant") {
+          fetch("/chat", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ message: message }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              const botMessage = data.chat_history[0].message;
+              chatBox.innerHTML += `<div class='message bot'><p>${botMessage}</p></div>`;
+              chatBox.scrollTop = chatBox.scrollHeight;
+            })
+            .catch((err) =>
+              console.log("Erro ao conversar com o assistente", err)
+            );
+        }
+      }
+
+      function toggleChatbot(type) {
+        currentChatbot = type;
+        document.getElementById("chat-box").innerHTML =
+          "<div class='message bot'>Digite sua pergunta ou imagem.</div>";
+      }
+    </script>
+  </body>
+</html>
